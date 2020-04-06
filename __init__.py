@@ -83,7 +83,6 @@ class CreateEvent(MycroftSkill):
         connections = results.get('connections', [])
         #need to verify this
         #self.speak(connections)
-
         #get informations about the event
         name = self.get_response("what is the name of the event")
         description = self.get_response("can you describe more the event")
@@ -91,7 +90,6 @@ class CreateEvent(MycroftSkill):
         enddate = self.get_response("when the event ends")
         startdt = extract_datetime(strtdate)
         enddt = extract_datetime(enddate)
-
         #adding attendees
         # getting contacts emails and names in two lists nameliste and adsmails
         nameListe = []
@@ -115,7 +113,7 @@ class CreateEvent(MycroftSkill):
                 x = self.get_response("who do you want to invite")
                 for l in range(0,len(nameListe)):
                     if x == nameListe[l]:
-                        self.speak("this person exists in your contacts")
+                        self.speak_dialog("exist")
                         exist = True
                         mail = adsmails[l]
                         attendee.append(mail)
@@ -126,7 +124,6 @@ class CreateEvent(MycroftSkill):
                             "timeZone": 'US/Central',
                             "items": [{"id":mail}]
                         }
-
                         eventsResult = service.freebusy().query(body=body).execute()
                         cal_dict = eventsResult[u'calendars']
                         print(cal_dict)
@@ -135,14 +132,14 @@ class CreateEvent(MycroftSkill):
                             statut = cal_dict[cal_name]
                             for i in statut:
                                 if (i == 'busy' and statut[i] == []):
-                                    self.speak("free")
+                                    self.speak_dialog("free")
                                     #ajouter l'email de x ala liste des attendee
                                 elif (i == 'busy' and statut[i] != []):
-                                    self.speak("busy")
+                                    self.speak_dialog("busy")
                     else:
                         exist = False
                 if exist == False:
-                    self.speak("this person does not exist in your contacts")
+                    self.speak_dialog("notexist")
                 j += 1
 
         #creation d'un evenement
