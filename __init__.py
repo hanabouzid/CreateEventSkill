@@ -142,6 +142,11 @@ class CreateEvent(MycroftSkill):
                     self.speak_dialog("notexist")
                 j += 1
 
+        attendeess = []
+        for i in range(len(attendee)):
+            email = {'email': attendee[i]}
+            attendeess.append(email)
+        print(attendeess)
         #creation d'un evenement
         event = {
             'summary': name,
@@ -158,7 +163,7 @@ class CreateEvent(MycroftSkill):
             'recurrence': [
                 'RRULE:FREQ=DAILY;COUNT=2'
             ],
-            'attendees': attendee,
+            'attendees': attendeess,
             'reminders': {
                 'useDefault': False,
                 'overrides': [
