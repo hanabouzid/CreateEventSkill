@@ -1,15 +1,15 @@
+from __future__ import print_function
 from adapt.intent import IntentBuilder
 from mycroft.skills.core import MycroftSkill, intent_handler
 from mycroft.util.log import LOG
 from mycroft.util.parse import extract_datetime
-from __future__ import print_function
 from datetime import datetime, timedelta
 import pickle
 import os.path
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import httplib2
-from apiclient.discovery import build
+from googleapiclient.discovery import build
 from oauth2client.file import Storage
 from oauth2client.client import OAuth2WebServerFlow
 from oauth2client import tools
