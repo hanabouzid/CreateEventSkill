@@ -42,7 +42,7 @@ class CreateEvent(MycroftSkill):
                 creds.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    'credentials.json', SCOPES)
+                    'credentials.json', SCOPES)       #dans mycroft on met '/opt/mycroft/skills/createeventskill.hanabouzid/credentials.json'
                 creds = flow.run_local_server(port=0)
                 # Save the credentials for the next run
             with open('token.pickle', 'wb') as token:
@@ -51,7 +51,7 @@ class CreateEvent(MycroftSkill):
         service = build('calendar', 'v3', credentials=creds)
 
         # Call the Calendar API
-        now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+        now = datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
         print('Getting the upcoming 10 events')
         events_result = service.events().list(calendarId='primary', timeMin=now,
                                               maxResults=10, singleEvents=True,
@@ -87,8 +87,8 @@ class CreateEvent(MycroftSkill):
         name = self.get_response("what is the name of the event")
         description = self.get_response("can you describe more the event")
         strtdate = self.get_response("when the event starts")
-        enddate = self.get_response("when the event ends")
         startdt = extract_datetime(strtdate)
+        enddate = self.get_response("when the event ends")
         enddt = extract_datetime(enddate)
         #adding attendees
         # getting contacts emails and names in two lists nameliste and adsmails
