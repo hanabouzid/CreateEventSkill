@@ -2,6 +2,7 @@ from __future__ import print_function
 from adapt.intent import IntentBuilder
 from mycroft.skills.core import MycroftSkill, intent_handler
 from mycroft.util.log import LOG
+from lingua_franca.parse import extract_datetime
 from mycroft.util.parse import extract_datetime
 from datetime import datetime, timedelta
 import pickle
@@ -27,6 +28,10 @@ class CreateEvent(MycroftSkill):
     # The constructor of the skill, which calls MycroftSkill's constructor
     def __init__(self):
         super(CreateEvent, self).__init__(name="CreateEvent")
+
+    @property
+    def utc_offset(self):
+        return timedelta(seconds=self.location['timezone']['offset'] / 1000)
 
     @intent_handler(IntentBuilder("").require("create_event"))
     def createEventt(self):
@@ -85,20 +90,16 @@ class CreateEvent(MycroftSkill):
         #need to verify this
         #self.speak(connections)
         #get informations about the event
-        local_time = pytz.timezone("US/Central")
         name = self.get_response("what is the name of the event")
         description = self.get_response("can you describe more the event")
         strtdate = self.get_response("when the event starts")
-        startdt = extract_datetime(strtdate)
-        #type date==>type json
-        local_datetime1 = local_time.localize(startdt, is_dst=None)
-        utc_datetime1 = local_datetime1.astimezone(pytz.utc)
-        datestart = utc_datetime1.isoformat("T")
+        st = extract_datetime(strtdate)
+        dmin =pytz.utc.localize(st[0])
+        datestart = dmin.isoformat("T")
         enddate = self.get_response("when the event ends")
-        enddt = extract_datetime(enddate)
-        local_datetime2 = local_time.localize(enddt, is_dst=None)
-        utc_datetime2 = local_datetime2.astimezone(pytz.utc)
-        datend = utc_datetime2.isoformat("T")
+        et = extract_datetime(enddate)
+        dmax = pytz.utc.localize(et[0])
+        datend = dmax.isoformat("T")
         #adding attendees
         # getting contacts emails and names in two lists nameliste and adsmails
         nameListe = []
