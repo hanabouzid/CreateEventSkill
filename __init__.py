@@ -14,8 +14,7 @@ from googleapiclient.discovery import build
 from oauth2client.file import Storage
 from oauth2client.client import OAuth2WebServerFlow
 from oauth2client import tools
-import pytz
-
+UTC_TZ = u'+00:00'
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 FLOW = OAuth2WebServerFlow(
     client_id='1019838388650-nt1mfumr3cltemeq7js8mjitn7a2kuu7.apps.googleusercontent.com',
@@ -94,12 +93,17 @@ class CreateEvent(MycroftSkill):
         description = self.get_response("can you describe more the event")
         strtdate = self.get_response("when the event starts")
         st = extract_datetime(strtdate)
-        dmin =pytz.utc.localize(st[0])
-        datestart = dmin.isoformat("T")
         enddate = self.get_response("when the event ends")
         et = extract_datetime(enddate)
-        dmax = pytz.utc.localize(et[0])
-        datend = dmax.isoformat("T")
+        st = st[0] - self.utc_offset
+        et = et[0] - self.utc_offset
+        datestart = st.strftime('%Y-%m-%dT%H:%M:00')
+        datend = et.strftime('%Y-%m-%dT%H:%M:00')
+        datend += UTC_TZ
+
+
+
+
         #adding attendees
         # getting contacts emails and names in two lists nameliste and adsmails
         nameListe = []
