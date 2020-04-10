@@ -2,7 +2,6 @@ from __future__ import print_function
 from adapt.intent import IntentBuilder
 from mycroft.skills.core import MycroftSkill, intent_handler
 from mycroft.util.log import LOG
-from lingua_franca.parse import extract_datetime
 from mycroft.util.parse import extract_datetime
 from datetime import datetime, timedelta
 import pickle
@@ -14,6 +13,7 @@ from googleapiclient.discovery import build
 from oauth2client.file import Storage
 from oauth2client.client import OAuth2WebServerFlow
 from oauth2client import tools
+import pytz
 UTC_TZ = u'+00:00'
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 FLOW = OAuth2WebServerFlow(
@@ -97,12 +97,16 @@ class CreateEvent(MycroftSkill):
         et = extract_datetime(enddate)
         st = st[0] - self.utc_offset
         et = et[0] - self.utc_offset
-        datestart = st.strftime('%Y-%m-%dT%H:%M:00')
-        datend = et.strftime('%Y-%m-%dT%H:%M:00')
-        datend += UTC_TZ
-
-
-
+        stdt = st.strftime('%Y-%m-%dT%H:%M:00')
+        dtd = et.strftime('%Y-%m-%dT%H:%M:00')
+        dtd += UTC_TZ
+        #on a ajouter cette partie pour que la date soit compatible avec free busy
+        start = datetime.strptime(stdt, '%Y-%m-%d %H:%M:00')
+        ds = pytz.utc.localize(start)
+        datestart= ds.isoformat("T")
+        end = datetime.strptime(dtd, '%Y-%m-%d %H:%M:00')
+        dn = pytz.utc.localize(end)
+        datend = dn.isoformat("T")
 
         #adding attendees
         # getting contacts emails and names in two lists nameliste and adsmails
