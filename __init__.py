@@ -100,6 +100,8 @@ class CreateEvent(MycroftSkill):
         datestart = st.strftime('%Y-%m-%dT%H:%M:00')
         datend = et.strftime('%Y-%m-%dT%H:%M:00')
         datend += UTC_TZ
+        datestart += UTC_TZ
+
         #adding attendees
         # getting contacts emails and names in two lists nameliste and adsmails
         nameListe = []
@@ -156,7 +158,7 @@ class CreateEvent(MycroftSkill):
         for i in range(len(attendee)):
             email = {'email': attendee[i]}
             attendeess.append(email)
-        print(attendeess)
+
         #creation d'un evenement
         event = {
             'summary': name,
