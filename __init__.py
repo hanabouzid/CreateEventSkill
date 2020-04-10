@@ -97,13 +97,9 @@ class CreateEvent(MycroftSkill):
         et = extract_datetime(enddate)
         st = st[0] - self.utc_offset
         et = et[0] - self.utc_offset
-        dx = pytz.utc.localize(st)
-        datestart = dx.isoformat("T")
-        dn = pytz.utc.localize(et)
-        datend = dn.isoformat("T")
-        #datestart = st.strftime('%Y-%m-%dT%H:%M:00')
-        #datend = et.strftime('%Y-%m-%dT%H:%M:00')
-        #datend += UTC_TZ
+        datestart = st.strftime('%Y-%m-%dT%H:%M:00')
+        datend = et.strftime('%Y-%m-%dT%H:%M:00')
+        datend += UTC_TZ
         #adding attendees
         # getting contacts emails and names in two lists nameliste and adsmails
         nameListe = []
